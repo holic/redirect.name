@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <title>redirect.name by holic</title>
+  </head>
+
+  <body>
+    <header>
+      <div class="inner">
+        <h1>redirect.name</h1>
+        <h2>Configure domain redirects and URL forwarding with a simple DNS record</h2>
+        <a href="https://github.com/holic/redirect.name" class="button"><small>View project on</small>GitHub</a>
+      </div>
+    </header>
+
+    <div id="content-wrapper">
+      <div class="inner clearfix">
+        <section id="main-content">
+          <h2>
+<a name="no-sign-up-required-just-add-a-dns-record" class="anchor" href="#no-sign-up-required-just-add-a-dns-record"><span class="octicon octicon-link"></span></a>No sign-up required. Just add a DNS record.</h2>
+
+<p>This simple redirection service has no database backend, so there's no need to sign up for anything. Everything is configured by DNS. Just point your domain to the service, add a DNS record to configure your redirect(s), and you're good to go.</p>
+
+<p>Here's a live example redirecting <a href="http://github.redirect.name"><code>github.redirect.name</code></a> to this project's GitHub repo:</p>
+
+<pre><code>github  IN  CNAME  alias.redirect.name.
+github  IN  TXT    "redirect.name=https://github.com/holic/redirect.name"
+</code></pre>
+
+<h2>
+<a name="instructions" class="anchor" href="#instructions"><span class="octicon octicon-link"></span></a>Instructions</h2>
+
+<ol>
+<li>Point your domain or subdomain to the redirection service. This is done by setting up an <code>A</code> record (for naked domains) or <code>CNAME</code> record (for subdomains).
+
+<ul>
+<li>
+<code>A</code> records should point to <code>107.170.45.49</code>
+</li>
+<li>
+<code>CNAME</code> records should point to <code>alias.redirect.name</code>
+</li>
+</ul>
+</li>
+<li>Configure your redirect by adding a <code>TXT</code> record on the same hostname as the record above.
+
+<ul>
+<li>Your <code>TXT</code> record value should have the format of <code>redirect.name=[path ]target[ code]</code>, where <code>target</code> is the target URL, <code>path</code> is an optional path to match on the hostname (defaults to any/all paths), and <code>code</code> is an optional status code for the redirect (defaults to <code>302</code>)</li>
+</ul>
+</li>
+</ol><p>If your DNS provider supports <code>ALIAS</code> or <code>ANAME</code> records on naked domains, it is recommended that you use that (with the <code>CNAME</code> value) in place of the <code>A</code> record.</p>
+
+<p>You can add more than one <code>TXT</code> record per hostname. The first path matched will be used for the redirect. Multiple <code>TXT</code> records for the same matched path result in a round-robin effect.</p>
+
+<p>Wildcard matches are also supported.</p>
+
+<p>Any unmatched paths will redirect to this documentation page, so it's recommended that you add a wildcard catch-all path when redirecting specific paths.</p>
+
+<h2>
+<a name="examples" class="anchor" href="#examples"><span class="octicon octicon-link"></span></a>Examples</h2>
+
+<ul>
+<li>
+<code>redirect.name=https://github.com/holic</code> redirects all paths on the hostname to <code>https://github.com/holic</code> with a <code>302</code> status code.</li>
+<li>
+<code>redirect.name=https://github.com/holic 301</code> redirects exactly as above, except with a <code>301</code> status code</li>
+<li>
+<code>redirect.name=/github https://github.com/holic</code> redirects only the <code>/github</code> path on the hostname to the target URL.</li>
+<li>
+<code>redirect.name=/* https://github.com/holic/*</code> is a wildcard match that will redirect to the target URL, replacing the wildcards with the matched value.</li>
+</ul>
+        </section>
+
+        <aside id="sidebar">
+          <a href="https://github.com/holic/redirect.name/zipball/master" class="button">
+            <small>Download</small>
+            .zip file
+          </a>
+          <a href="https://github.com/holic/redirect.name/tarball/master" class="button">
+            <small>Download</small>
+            .tar.gz file
+          </a>
+
+          <p class="repo-owner"><a href="https://github.com/holic/redirect.name"></a> is maintained by <a href="https://github.com/holic">holic</a>.</p>
+
+          <p>This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the Architect theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
+        </aside>
+      </div>
+    </div>
+
+  
+  </body>
+</html>
