@@ -62,23 +62,20 @@ github  IN  TXT    "redirect.name=https://github.com/holic/redirect.name"
 </li>
 </ol><p>You can add more than one <code>TXT</code> record per hostname. The first path matched will be used for the redirect. Multiple <code>TXT</code> records for the same matched path result in a round-robin effect.</p>
 
-<p>Wildcard matches are also supported.</p>
+<p>Wildcard matches (<code>*</code>) are also supported.</p>
 
 <p>Any unmatched paths will redirect to this documentation page, so it's recommended that you add a wildcard catch-all path when redirecting specific paths.</p>
 
 <h2>
 <a name="examples" class="anchor" href="#examples"><span class="octicon octicon-link"></span></a>Examples</h2>
 
-<ul>
-<li>
-<code>redirect.name=https://github.com/holic</code> redirects all paths on the hostname to <code>https://github.com/holic</code> with a <code>302</code> status code.</li>
-<li>
-<code>redirect.name=https://github.com/holic 301</code> redirects exactly as above, except with a <code>301</code> status code</li>
-<li>
-<code>redirect.name=/github https://github.com/holic</code> redirects only the <code>/github</code> path on the hostname to the target URL.</li>
-<li>
-<code>redirect.name=/* https://github.com/holic/*</code> is a wildcard match that will redirect to the target URL, replacing the wildcards with the matched value.</li>
-</ul>
+<p><code>redirect.name=https://github.com/holic</code> redirects all paths on the hostname to <code>https://github.com/holic</code> with a <code>302</code> status code.</p>
+
+<p><code>redirect.name=https://github.com/holic 301</code> redirects exactly as above, except with a <code>301</code> status code.</p>
+
+<p><code>redirect.name=/github https://github.com/holic</code> redirects only the <code>/github</code> path on the hostname to the target URL.</p>
+
+<p><code>redirect.name=/* https://github.com/holic/*</code> is a wildcard match that will redirect to the target URL, replacing the wildcards with the matched value.</p>
         </section>
 
         <aside id="sidebar">
