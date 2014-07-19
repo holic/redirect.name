@@ -16,8 +16,10 @@ function fail (...)
 end
 
 -- fall back to documentation site
-function fallback ()
-    ngx.redirect("http://redirect.name/")
+function fallback (reason)
+    local target = "http://redirect.name/"
+    if reason then target = target .. "#reason=" .. ngx.escape_uri(reason) end
+    ngx.redirect(target)
 end
 
 -- escape patterns
@@ -33,7 +35,7 @@ local answers, err = r:query(ngx.var.host, { qtype = resolver.TYPE_TXT })
 if not answers then return fail("Failed to query the DNS server: ", err) end
 
 -- fall back when query returns bad hostname, non-existent hostname, or other errors
-if answers.errcode then return fallback() end
+if answers.errcode then return fallback(answers.errcode .. " " .. answers.errstr) end
 
 
 for i, ans in ipairs(answers) do
@@ -41,7 +43,7 @@ for i, ans in ipairs(answers) do
     repeat
         if ans.type ~= resolver.TYPE_TXT then break end
 
-        local m, err = ngx.re.match(ans.txt, "redirect\\.name=(?:(?<from>/\\S*)\\s+)?(?<to>(?:https?://\\S+|/\\S*))(?:\\s+(?<status>301|302))?", "i")
+        local m, err = ngx.re.match(ans.txt, "redirect\\.name=(?:(?<from>/\\S*)\\s+)?(?<to>https?://\\S+|/\\S*)(?:\\s+(?<status>301|302))?", "i")
         if not m then break end
 
         local to = m.to
@@ -69,4 +71,4 @@ end
 
 
 -- fall back if no records match
-return fallback()
+return fallback("No paths matched.")
