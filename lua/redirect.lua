@@ -31,33 +31,35 @@ end
 
 if not answers.errcode then
     for i, ans in ipairs(answers) do
-        if ans.type == resolver.TYPE_TXT then
+        -- wrap in `repeat` so we can use `break` to mimic Lua's missing `continue`
+        repeat
+            if ans.type ~= resolver.TYPE_TXT then break end
+
             local m, err = ngx.re.match(ans.txt, "redirect\\.name=(?:(?<from>/\\S*)\\s+)?(?<to>(?:https?://\\S+|/\\S*))(?:\\s+(?<status>\\d+))?", "i")
+            if not m then break end
 
-            if m then
-                local uri = ngx.var.request_uri
-                -- ngx.header["X-URI"] = uri
-                -- ngx.header["X-From"] = m.from
-                local from = escape(m.from or "/*")
-                -- ngx.header["X-From-Escaped"] = from
-                local pattern = "^" .. string.gsub(from, "%%%*", "(.*)", 1) .. "$"
-                -- ngx.header["X-Pattern"] = pattern
+            local uri = ngx.var.request_uri
+            -- ngx.header["X-URI"] = uri
+            -- ngx.header["X-From"] = m.from
+            local from = escape(m.from or "/*")
+            -- ngx.header["X-From-Escaped"] = from
+            local pattern = "^" .. string.gsub(from, "%%%*", "(.*)", 1) .. "$"
+            -- ngx.header["X-Pattern"] = pattern
 
-                if string.find(uri, pattern) then
-                    -- ngx.header["X-To"] = m.to
-                    local to = escape(m.to)
-                    -- ngx.header["X-To-Escaped"] = to
-                    local replace = string.gsub(to, "%%%*", "%%1", 1)
-                    -- ngx.header["X-Replace"] = replace
-                    local target = string.gsub(uri, pattern, replace)
-                    -- ngx.header["X-Target"] = target
+            if not string.find(uri, pattern) then break end
 
-                    local status = codes[m.status] or codes.default
+            -- ngx.header["X-To"] = m.to
+            local to = escape(m.to)
+            -- ngx.header["X-To-Escaped"] = to
+            local replace = string.gsub(to, "%%%*", "%%1", 1)
+            -- ngx.header["X-Replace"] = replace
+            local target = string.gsub(uri, pattern, replace)
+            -- ngx.header["X-Target"] = target
 
-                    return ngx.redirect(target, status)
-                end
-            end
-        end
+            local status = codes[m.status] or codes.default
+
+            return ngx.redirect(target, status)
+        until true
     end
 end
 
