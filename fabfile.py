@@ -42,6 +42,7 @@ def update_scripts():
 	sudo('mkdir -p /usr/local/openresty/nginx/lua')
 	with cd('/usr/local/openresty/nginx/lua'):
 		put('lua/redirect.lua', 'redirect.lua')
+		put('lua/parse_redirect.lua', 'parse_redirect.lua')
 	nginx('reload')
 
 @task
