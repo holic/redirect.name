@@ -42,22 +42,14 @@ for i, ans in ipairs(answers) do
         if not m then break end
 
         local uri = ngx.var.request_uri
-        -- ngx.header["X-URI"] = uri
-        -- ngx.header["X-From"] = m.from
         local from = escape(m.from or "/*")
-        -- ngx.header["X-From-Escaped"] = from
         local pattern = "^" .. string.gsub(from, "%%%*", "(.*)", 1) .. "$"
-        -- ngx.header["X-Pattern"] = pattern
 
         if not string.find(uri, pattern) then break end
 
-        -- ngx.header["X-To"] = m.to
         local to = escape(m.to)
-        -- ngx.header["X-To-Escaped"] = to
         local replace = string.gsub(to, "%%%*", "%%1", 1)
-        -- ngx.header["X-Replace"] = replace
         local target = string.gsub(uri, pattern, replace)
-        -- ngx.header["X-Target"] = target
 
         local status = codes[m.status] or codes.default
 
