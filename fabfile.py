@@ -25,7 +25,7 @@ def nginx(command):
 
 @task
 def add_init_script():
-	put('nginx.init.d', '/etc/init.d/nginx')
+	put('init.d/nginx', '/etc/init.d/nginx')
 	sudo('chmod +x /etc/init.d/nginx')
 	sudo('update-rc.d -f nginx defaults')
 	nginx('start')
@@ -34,14 +34,14 @@ def add_init_script():
 def update_config():
 	with cd('/usr/local/openresty/nginx/conf'):
 		sudo('mv -n nginx.conf nginx.conf.default')
-		put('nginx.conf', 'nginx.conf')
+		put('conf/nginx.conf', 'nginx.conf')
 	nginx('reload')
 
 @task
 def update_scripts():
 	sudo('mkdir -p /usr/local/openresty/nginx/lua')
 	with cd('/usr/local/openresty/nginx/lua'):
-		put('redirect.lua', 'redirect.lua')
+		put('lua/redirect.lua', 'redirect.lua')
 	nginx('reload')
 
 @task
