@@ -19,12 +19,13 @@ if not answers then return fallback("Failed to query the DNS server: " .. err) e
 if answers.errcode then return fallback("Could not resolve hostname: " .. answers.errcode .. " " .. answers.errstr) end
 
 
-local parse_redirect = require "parse_redirect"
+local parse = require "redirect.parse"
+local translate = require "redirect.translate"
 local uri = ngx.var.request_uri
 
 for i, ans in ipairs(answers) do
     if ans.type == resolver.TYPE_TXT then
-        local location, status = parse_redirect(uri, ans.txt)
+        local location, status = translate(uri, parse(ans.txt))
 
         if location then
             return ngx.redirect(location, status)
