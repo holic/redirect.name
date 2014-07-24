@@ -44,29 +44,35 @@
 
 <p>Here's a live example redirecting <a href="http://github.redirect.name"><code>github.redirect.name</code></a> to this project's GitHub repo:</p>
 
-<pre><code>github  IN  A    107.170.45.49
-github  IN  TXT  "redirect.name=https://github.com/holic/redirect.name"
-</code></pre>
+<pre><code>github            IN  CNAME  alias.redirect.name
+_redirect.github  IN  TXT    "Redirects to https://github.com/holic/redirect.name"</code></pre>
 
 <h2>
 <a name="instructions" class="anchor" href="#instructions"><span class="octicon octicon-link"></span></a>Instructions</h2>
 
 <ol>
-<li>Point your domain or subdomain to the redirection service. It is recommended that you use an <code>ALIAS</code> or <code>ANAME</code> record type if your DNS provider supports it. Otherwise, use a plain <code>A</code> record, keeping in mind that the IP address may change (or more may be added).
+<li>Point your domain or subdomain to the redirection service. For subdomains, this is done by setting up a CNAME record. For apex/naked domains, it is recommended that you use an <code>ALIAS</code> or <code>ANAME</code> record type if your DNS provider supports it. Otherwise, use a plain <code>A</code> record, keeping in mind that the IP address may change (or more may be added).
 
 <ul>
 <li>
-<code>ALIAS</code> and <code>ANAME</code> records should point to <code>alias.redirect.name</code>
+<code>CNAME</code> and <code>ALIAS</code>/<code>ANAME</code> records should point to <code>alias.redirect.name</code>
 </li>
 <li>
 <code>A</code> records should point to <code>107.170.45.49</code>
 </li>
 </ul>
 </li>
-<li>Configure your redirect by adding a <code>TXT</code> record on the same hostname as the record above.
+<li>Configure your redirect by adding a <code>TXT</code> record on the same hostname as the record above, prepended with <code>_redirect.</code>
 
 <ul>
-<li>Your <code>TXT</code> record value should have the format of <code>redirect.name=[path ]target[ code]</code>, where <code>target</code> is the target URL, <code>path</code> is an optional path to match on the hostname (defaults to any/all paths), and <code>code</code> is an optional status code for the redirect (defaults to <code>302</code>)</li>
+<li>For example, on the hostname <code>github</code>, your <code>TXT</code> record should be added to the <code>_redirect.github</code> hostname.
+<li>Your <code>TXT</code> record value should have a human-readable format format like one of the following:
+<ul>
+<li><code>Redirects to [target]</code>, where <code>target</code> is the target URL</li>
+<li><code>Redirects from [path] to [target]</code>, where <code>path</code> is a path to match on the hostname</li>
+<li><code>Redirects permanently to [target]</code>, where <code>permanently</code> redirects with a <code>301</code> status code (defaults to <code>302</code> otherwise)</li>
+</ul>
+<li>As long as the <code>TXT</code> record starts with <code>Redirect</code> or <code>Redirects</code> and has a target, it does not matter the order of <code>from [path]</code>, <code>to [target]</code>, or the <code>permanently</code> flag.
 </ul>
 </li>
 </ol><p>You can add more than one <code>TXT</code> record per hostname. The first path matched will be used for the redirect. Multiple <code>TXT</code> records for the same matched path result in a round-robin effect.</p>
@@ -78,13 +84,13 @@ github  IN  TXT  "redirect.name=https://github.com/holic/redirect.name"
 <h2>
 <a name="examples" class="anchor" href="#examples"><span class="octicon octicon-link"></span></a>Examples</h2>
 
-<p><code>redirect.name=https://github.com/holic</code> redirects all paths on the hostname to <code>https://github.com/holic</code> with a <code>302</code> status code.</p>
+<p><code>Redirects to https://github.com/holic</code> redirects all paths on the hostname to <code>https://github.com/holic</code> with a <code>302</code> status code.</p>
 
-<p><code>redirect.name=https://github.com/holic 301</code> redirects exactly as above, except with a <code>301</code> status code.</p>
+<p><code>Redirects permanently to https://github.com/holic</code> redirects exactly as above, except with a <code>301</code> status code.</p>
 
-<p><code>redirect.name=/github https://github.com/holic</code> redirects only the <code>/github</code> path on the hostname to the target URL.</p>
+<p><code>Redirects from /github to https://github.com/holic</code> redirects only the <code>/github</code> path on the hostname to the target URL.</p>
 
-<p><code>redirect.name=/* https://github.com/holic/*</code> is a wildcard match that will redirect to the target URL, replacing the wildcards with the matched value.</p>
+<p><code>Redirects from /* to https://github.com/holic/*</code> is a wildcard match that will redirect to the target URL, replacing the wildcards with the matched value.</p>
         </section>
 
         <aside id="sidebar">
