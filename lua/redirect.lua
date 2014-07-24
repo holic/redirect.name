@@ -12,7 +12,7 @@ local r, err = resolver:new { nameservers = { "8.8.8.8", "8.8.4.4" } }
 if not r then return fallback("Failed to instantiate the resolver: " .. err) end
 
 -- query hostname for TXT records
-local answers, err = r:query(ngx.var.host, { qtype = resolver.TYPE_TXT })
+local answers, err = r:query("_redirect." .. ngx.var.host, { qtype = resolver.TYPE_TXT })
 if not answers then return fallback("Failed to query the DNS server: " .. err) end
 
 -- fall back when query returns bad hostname, non-existent hostname, or other errors
