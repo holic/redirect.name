@@ -2,32 +2,32 @@ local expect = require "expect"
 local parse = require "redirect.parse"
 local args
 
-args = parse("redirect.name=http://github.com.com/holic")
+args = parse("Redirect to http://github.com.com/holic")
 expect(args.path):to_be(nil)
 expect(args.target):to_be("http://github.com.com/holic")
 expect(args.status):to_be(nil)
 
-args = parse("redirect.name=http://github.com.com/holic 301")
+args = parse("Redirect permanently to http://github.com.com/holic")
 expect(args.path):to_be(nil)
 expect(args.target):to_be("http://github.com.com/holic")
-expect(args.status):to_be("301")
+expect(args.status):to_be("permanently")
 
-args = parse("redirect.name=/ https://github.com.com/holic")
+args = parse("Redirect from / to https://github.com.com/holic")
 expect(args.path):to_be("/")
 expect(args.target):to_be("https://github.com.com/holic")
 expect(args.status):to_be(nil)
 
-args = parse("redirect.name=/old /new")
+args = parse("Redirects to /new from /old")
 expect(args.path):to_be("/old")
 expect(args.target):to_be("/new")
 expect(args.status):to_be(nil)
 
-args = parse("redirect.name=/old /new 301")
+args = parse("Redirects from /old to /new permanently")
 expect(args.path):to_be("/old")
 expect(args.target):to_be("/new")
-expect(args.status):to_be("301")
+expect(args.status):to_be("permanently")
 
-args = parse("redirect.name=/new 302")
+args = parse("Redirects temporarily to /new")
 expect(args.path):to_be(nil)
 expect(args.target):to_be("/new")
-expect(args.status):to_be("302")
+expect(args.status):to_be("temporarily")

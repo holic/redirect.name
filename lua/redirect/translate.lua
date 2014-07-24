@@ -2,7 +2,8 @@
 local codes = {
     ["301"] = 301,
     ["302"] = 302,
-    -- ["307"] = 307, -- not supported by openresty
+    ["permanently"] = 301,
+    ["temporarily"] = 302,
     default = 302
 }
 

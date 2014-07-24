@@ -1,39 +1,30 @@
 function parse (record)
     -- TODO: add ^ and $ once resolver is fixed
     -- https://github.com/openresty/lua-resty-dns/issues/4
-    local value = string.match(record, "redirect%.name=(.*)")
+    local value = string.match(record, "Redirects?(%s+.*)")
     if not value then return {} end
 
-    -- split record value into a table of args
     local args = {}
-    local i = 0
-    for arg in string.gmatch(value, "%S+") do
-        table.insert(args, arg)
-        i = i + 1
-        -- break after first three args
-        if i >= 3 then break end
-    end
-    if not #args then return {} end
 
-    -- parse status code
-    if #args > 1 and string.match(args[#args], "^30[12]$") then
-        args.status = args[#args]
-        table.remove(args, #args)
+    -- parse target
+    local target = string.match(value, "%s+to%s+(%S+)")
+    if target and (string.match(target, "^/") or string.match(target, "^https?://")) then
+        args.target = target
+    else
+        return {}
     end
 
     -- parse path
-    if #args == 2 then
-        if string.match(args[1], "^/") then
-            args.path = args[1]
-        end
-        table.remove(args, 1)
+    local path = string.match(value, "%s+from%s+(%S+)")
+    if path then
+        args.path = path
     end
 
-    -- parse target
-    if string.match(args[1], "^/") or string.match(args[1], "^https?://") then
-        args.target = args[1]
+    -- parse status
+    local status = string.match(value, "%s+(permanently)") or string.match(value, "%s+(temporarily)")
+    if status then
+        args.status = status
     end
-    table.remove(args, 1)
 
     return args
 end

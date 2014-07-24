@@ -14,13 +14,13 @@ location, status = translate("/", { target = "https://example.com/", status = "3
 expect(location):to_be("https://example.com/")
 expect(status):to_be(301)
 
-location, status = translate("/", { path = "/twitter", target = "http://example.com/", status = "301" })
+location, status = translate("/", { path = "/twitter", target = "http://example.com/", status = "permanently" })
 expect(location):to_be(nil)
 expect(status):to_be(nil)
 
-location, status = translate("/", { path = "/", target = "http://example.com/" })
+location, status = translate("/", { path = "/", target = "http://example.com/", status = "permanently" })
 expect(location):to_be("http://example.com/")
-expect(status):to_be(302)
+expect(status):to_be(301)
 
 location, status = translate("/about-us", { path = "/*", target = "http://example.com/" })
 expect(location):to_be("http://example.com/")
@@ -30,6 +30,6 @@ location, status = translate("/about-us", { path = "/*", target = "http://exampl
 expect(location):to_be("http://example.com/about-us")
 expect(status):to_be(302)
 
-location, status = translate("/blog/1", { path = "/*/1", target = "http://example.com/*" })
+location, status = translate("/blog/1", { path = "/*/1", target = "http://example.com/*", status = "temporarily" })
 expect(location):to_be("http://example.com/blog")
 expect(status):to_be(302)
