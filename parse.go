@@ -3,8 +3,8 @@ package main
 import "regexp"
 
 type Config struct {
-	From string
-	To   string
+	From          string
+	To            string
 	RedirectState string
 }
 

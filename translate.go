@@ -8,7 +8,7 @@ import (
 
 type Redirect struct {
 	Location string
-	Status int
+	Status   int
 }
 
 func Translate(uri string, config *Config) *Redirect {
