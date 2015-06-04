@@ -2,9 +2,11 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net"
 	"net/http"
 	"net/url"
+	"time"
 )
 
 func fallback(w http.ResponseWriter, r *http.Request, reason string) {
@@ -42,5 +44,10 @@ func handler(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	http.HandleFunc("/", handler)
-	http.ListenAndServe(":8081", nil)
+	srv := &http.Server{
+		Addr:         ":8081",
+		ReadTimeout:  2 * time.Second,
+		WriteTimeout: 2 * time.Second,
+	}
+	log.Fatal(srv.ListenAndServe())
 }
