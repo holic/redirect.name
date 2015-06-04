@@ -22,8 +22,7 @@ func Translate(uri string, config *Config) *Redirect {
 		return nil
 	}
 
-	redirect := new(Redirect)
-	redirect.Location = config.To
+	redirect := &Redirect{Location: config.To}
 
 	switch config.RedirectState {
 	case "301", "permanently":
