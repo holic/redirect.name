@@ -1,0 +1,18 @@
+machine:
+  golang:
+    version: 1.4
+  services:
+    - docker
+
+test:
+  override:
+    - go test
+    - go build -o server
+    - docker build .
+
+deployment:
+  hub:
+    branch: master
+    commands:
+      - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
+      - docker push holic/redirectname
