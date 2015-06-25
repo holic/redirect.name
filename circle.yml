@@ -1,18 +1,16 @@
 machine:
-  golang:
-    version: 1.4
   services:
     - docker
 
 test:
   override:
-    - go test
-    - go build -o server
-    - docker build .
+    - docker run -v $PWD:/tmp/redirect.name -w /tmp/redirect.name golang:1.4 go test
+    - docker run -v $PWD:/tmp/redirect.name -w /tmp/redirect.name -e CGO_ENABLED=0 golang:1.4 go build -a -installsuffix cgo -o artifacts/server
+    - docker build -t holic/redirect.name .
 
 deployment:
   hub:
     branch: master
     commands:
       - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
-      - docker push holic/redirectname
+      - docker push holic/redirect.name
