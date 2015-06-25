@@ -5,7 +5,7 @@ machine:
 test:
   override:
     - docker run -v $PWD:/tmp/redirect.name -w /tmp/redirect.name golang:1.4 go test
-    - docker run -v $PWD:/tmp/redirect.name -w /tmp/redirect.name -e CGO_ENABLED=0 golang:1.4 go build -a -installsuffix cgo -o artifacts/server
+    - docker run -v $PWD:/tmp/redirect.name -w /tmp/redirect.name -e CGO_ENABLED=0 golang:1.4 go build -a -installsuffix cgo -o server
     - docker build -t holic/redirect.name .
 
 deployment:

@@ -1,3 +1,3 @@
 FROM scratch
-COPY artifacts/server /server
+COPY server /
 ENTRYPOINT ["/server"]
