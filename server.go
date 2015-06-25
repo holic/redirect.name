@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"strings"
 	"time"
 )
 
@@ -19,11 +20,8 @@ func fallback(w http.ResponseWriter, r *http.Request, reason string) {
 }
 
 func handler(w http.ResponseWriter, r *http.Request) {
-	host, _, err := net.SplitHostPort(r.Host)
-	if err != nil {
-		fallback(w, r, fmt.Sprintf("Could not split host (%v)", err))
-		return
-	}
+	parts := strings.Split(r.Host, ":")
+	host := parts[0]
 
 	hostname := fmt.Sprintf("_redirect.%s", host)
 	txt, err := net.LookupTXT(hostname)
