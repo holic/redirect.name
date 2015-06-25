@@ -118,6 +118,30 @@ _redirect.github  IN  TXT    "Redirects to https://github.com/holic/redirect.nam
       </div>
     </div>
 
+  <script>
+    ;(function () {
+      var hash = document.location.hash.replace(/^#/, '')
+      if (hash === '') return
+
+      var params = {}
+      hash.split('&').forEach(function (pair) {
+        var parts = pair.split('=').map(function (part) { return part.replace(/\+/g, ' ') })
+        params[decodeURIComponent(parts.shift())] = decodeURIComponent(parts.join('='))
+      })
+
+      if (params.reason) {
+        var reason = params.reason.replace(/&/g, '&amp;')
+                                  .replace(/</g, '&lt;')
+                                  .replace(/>/g, '&gt;')
+
+        var div = document.createElement('div')
+        div.className = 'alert'
+        div.innerHTML = '<div class="inner clearfix"><p><strong>Uh oh!</strong> Your redirect appears to be misconfigured.</p><p class="text-monospace">' + reason + '</p></div>'
+
+        document.body.insertBefore(div, document.body.firstChild)
+      }
+    })()
+  </script>
   
   </body>
 </html>
