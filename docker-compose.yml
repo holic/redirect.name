@@ -2,3 +2,4 @@ web:
   image: holic/redirect.name
   ports:
     - "80:8081"
+  restart: always
