@@ -2,6 +2,10 @@ machine:
   services:
     - docker
 
+dependencies:
+  override:
+    - echo
+
 test:
   override:
     - docker run -v $PWD:/tmp/redirect.name -w /tmp/redirect.name golang:1.4 go test
