@@ -2,5 +2,5 @@
 
 Please refer to [redirect.name](http://redirect.name/) for documentation.
 
-[ci-image]: https://img.shields.io/circleci/project/holic/redirect.name.svg?style=flat
+[ci-image]: https://img.shields.io/circleci/project/holic/redirect.name/master.svg?style=flat
 [ci-url]: https://circleci.com/gh/holic/redirect.name
