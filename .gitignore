@@ -1,5 +1,8 @@
 .DS_Store
 
-*.pyc
-
+# ignore docs repo
 docs/
+
+# ignore build artifacts
+redirect.name
+server
