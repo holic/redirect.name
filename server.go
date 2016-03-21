@@ -31,7 +31,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	for _, record := range txt {
-		redirect := Translate(r.URL.String(), Parse(record))
+		redirect := Translate(r.Method, r.URL.String(), Parse(record))
 		if redirect != nil {
 			http.Redirect(w, r, redirect.Location, redirect.Status)
 			return

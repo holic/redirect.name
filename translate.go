@@ -11,7 +11,7 @@ type Redirect struct {
 	Status   int
 }
 
-func Translate(uri string, config *Config) *Redirect {
+func Translate(method string, uri string, config *Config) *Redirect {
 	if uri == "" {
 		return nil
 	}
@@ -24,13 +24,18 @@ func Translate(uri string, config *Config) *Redirect {
 
 	redirect := &Redirect{Location: config.To}
 
-	switch config.RedirectState {
-	case "301", "permanently":
-		redirect.Status = 301
-	case "302", "temporarily":
-		redirect.Status = 302
+	switch method {
+	case "POST":
+		redirect.Status = 307
 	default:
-		redirect.Status = 302
+		switch config.RedirectState {
+		case "301", "permanently":
+			redirect.Status = 301
+		case "302", "temporarily":
+			redirect.Status = 302
+		default:
+			redirect.Status = 302
+		}
 	}
 
 	// no `From` assumes catch-all, so redirect immediately to `Location`
