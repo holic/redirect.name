@@ -43,18 +43,18 @@ func handler(w http.ResponseWriter, r *http.Request) {
 
 	logDebug("Checking URL: %s", r.URL.String())
 
-	var catch_alls []string
+	catch_alls := make(map[string]*Config)
+
 	logDebug("Begin record search.")
 	for _, record := range txt {
 		logDebug("Inspecting: %s", record)
 		config := Parse(record)
 		if strings.TrimSpace(config.From) == "" {
 			logDebug("Saving catch all.")
-			catch_alls = append(catch_alls, record)
-			_ = catch_alls
+			catch_alls[record] = config
 			continue
 		}
-		redirect := Translate(r.URL.String(), Parse(record))
+		redirect := Translate(r.URL.String(), config)
 		if redirect != nil {
 			http.Redirect(w, r, redirect.Location, redirect.Status)
 			logDebug("Found matching record.")
@@ -64,9 +64,11 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	logDebug("End record search")
 
 	logDebug("Begin catch alls")
-	for _, record := range catch_alls {
+	var record string
+	var config *Config
+	for record, config = range catch_alls {
 		logDebug("Inspecting: %s", record)
-		redirect := Translate(r.URL.String(), Parse(record))
+		redirect := Translate(r.URL.String(), config)
 		if redirect != nil {
 			http.Redirect(w, r, redirect.Location, redirect.Status)
 			logDebug("Found catch all.")
