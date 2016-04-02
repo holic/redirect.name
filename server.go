@@ -11,17 +11,6 @@ import (
 	"time"
 )
 
-var debug = os.Getenv("DEBUG")
-func logDebug(format string, args ...interface{}) {
-	if debug != "" {
-		if len(args) == 0 {
-			log.Print(format)
-		} else {
-			log.Printf(format, args)
-		}
-	}
-}
-
 func fallback(w http.ResponseWriter, r *http.Request, reason string) {
 	location := "http://redirect.name/"
 	if reason != "" {
@@ -41,41 +30,29 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	logDebug("Checking URL: %s", r.URL.String())
-
 	catch_alls := make(map[string]*Config)
 
-	logDebug("Begin record search.")
 	for _, record := range txt {
-		logDebug("Inspecting: %s", record)
 		config := Parse(record)
 		if strings.TrimSpace(config.From) == "" {
-			logDebug("Saving catch all.")
 			catch_alls[record] = config
 			continue
 		}
 		redirect := Translate(r.URL.String(), config)
 		if redirect != nil {
 			http.Redirect(w, r, redirect.Location, redirect.Status)
-			logDebug("Found matching record.")
 			return
 		}
 	}
-	logDebug("End record search")
 
-	logDebug("Begin catch alls")
-	var record string
 	var config *Config
-	for record, config = range catch_alls {
-		logDebug("Inspecting: %s", record)
+	for _, config = range catch_alls {
 		redirect := Translate(r.URL.String(), config)
 		if redirect != nil {
 			http.Redirect(w, r, redirect.Location, redirect.Status)
-			logDebug("Found catch all.")
 			return
 		}
 	}
-	logDebug("No match found.")
 
 	fallback(w, r, "No paths matched")
 }
