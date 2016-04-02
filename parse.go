@@ -11,7 +11,7 @@ type Config struct {
 var configRE = regexp.MustCompile(`Redirects?(\s+.*)`)
 var fromRE = regexp.MustCompile(`\s+from\s+(/\S*)`)
 var toRE = regexp.MustCompile(`\s+to\s+(https?\://\S+|/\S*)`)
-var stateRE = regexp.MustCompile(`\s+(permanently|temporarily)`)
+var stateRE = regexp.MustCompile(`\s+(permanently|temporarily)|\s+with\s+(301|302|307|308)`)
 
 func Parse(record string) *Config {
 	configMatches := configRE.FindStringSubmatch(record)
@@ -32,6 +32,9 @@ func Parse(record string) *Config {
 	}
 	if len(stateMatches) > 0 {
 		config.RedirectState = stateMatches[1]
+		if config.RedirectState == "" {
+			config.RedirectState = stateMatches[2]
+		}
 	}
 
 	return config

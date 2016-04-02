@@ -26,6 +26,24 @@ func TestTranslate(t *testing.T) {
 	redirect = Translate("/", &Config{From: "/", To: "https://example.com/", RedirectState: "permanently"})
 	assertEqual(t, redirect.Location, "https://example.com/")
 	assertEqual(t, redirect.Status, 301)
+
+	redirect = Translate("/", &Config{From: "/", To: "https://example.com/", RedirectState: "temporarily"})
+	assertEqual(t, redirect.Location, "https://example.com/")
+	assertEqual(t, redirect.Status, 302)
+
+	// Test status codes
+
+	redirect = Translate("/", &Config{From: "/", To: "https://example.com/", RedirectState: "301"})
+	assertEqual(t, redirect.Status, 301)
+
+	redirect = Translate("/", &Config{From: "/", To: "https://example.com/", RedirectState: "302"})
+	assertEqual(t, redirect.Status, 302)
+
+	redirect = Translate("/", &Config{From: "/", To: "https://example.com/", RedirectState: "307"})
+	assertEqual(t, redirect.Status, 307)
+
+	redirect = Translate("/", &Config{From: "/", To: "https://example.com/", RedirectState: "308"})
+	assertEqual(t, redirect.Status, 308)
 }
 
 func TestTranslateWildcard(t *testing.T) {

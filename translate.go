@@ -29,6 +29,10 @@ func Translate(uri string, config *Config) *Redirect {
 		redirect.Status = 301
 	case "302", "temporarily":
 		redirect.Status = 302
+	case "307":
+		redirect.Status = 307
+	case "308":
+		redirect.Status = 308
 	default:
 		redirect.Status = 302
 	}
