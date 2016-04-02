@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"log"
 	"net"
@@ -19,6 +20,32 @@ func fallback(w http.ResponseWriter, r *http.Request, reason string) {
 	http.Redirect(w, r, location, 302)
 }
 
+func getRedirect(txt []string, url string) (*Redirect, error) {
+	catch_alls := make(map[string]*Config)
+
+	for _, record := range txt {
+		config := Parse(record)
+		if strings.TrimSpace(config.From) == "" {
+			catch_alls[record] = config
+			continue
+		}
+		redirect := Translate(url, config)
+		if redirect != nil {
+			return redirect, nil
+		}
+	}
+
+	var config *Config
+	for _, config = range catch_alls {
+		redirect := Translate(url, config)
+		if redirect != nil {
+			return redirect, nil
+		}
+	}
+
+	return nil, errors.New("No paths matched")
+}
+
 func handler(w http.ResponseWriter, r *http.Request) {
 	parts := strings.Split(r.Host, ":")
 	host := parts[0]
@@ -30,31 +57,12 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	catch_alls := make(map[string]*Config)
-
-	for _, record := range txt {
-		config := Parse(record)
-		if strings.TrimSpace(config.From) == "" {
-			catch_alls[record] = config
-			continue
-		}
-		redirect := Translate(r.URL.String(), config)
-		if redirect != nil {
-			http.Redirect(w, r, redirect.Location, redirect.Status)
-			return
-		}
+	redirect, err := getRedirect(txt, r.URL.String())
+	if err != nil {
+		fallback(w, r, err.Error())
+	} else {
+		http.Redirect(w, r, redirect.Location, redirect.Status)
 	}
-
-	var config *Config
-	for _, config = range catch_alls {
-		redirect := Translate(r.URL.String(), config)
-		if redirect != nil {
-			http.Redirect(w, r, redirect.Location, redirect.Status)
-			return
-		}
-	}
-
-	fallback(w, r, "No paths matched")
 }
 
 func main() {
