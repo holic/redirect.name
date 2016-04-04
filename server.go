@@ -21,12 +21,11 @@ func fallback(w http.ResponseWriter, r *http.Request, reason string) {
 }
 
 func getRedirect(txt []string, url string) (*Redirect, error) {
-	catch_alls := make(map[string]*Config)
-
+	var catchAlls []*Config
 	for _, record := range txt {
 		config := Parse(record)
-		if strings.TrimSpace(config.From) == "" {
-			catch_alls[record] = config
+		if config.From == "" {
+			catchAlls = append(catchAlls, config)
 			continue
 		}
 		redirect := Translate(url, config)
@@ -36,7 +35,7 @@ func getRedirect(txt []string, url string) (*Redirect, error) {
 	}
 
 	var config *Config
-	for _, config = range catch_alls {
+	for _, config = range catchAlls {
 		redirect := Translate(url, config)
 		if redirect != nil {
 			return redirect, nil
