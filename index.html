@@ -82,6 +82,14 @@ _redirect.github  IN  TXT    "Redirects to https://github.com/holic/redirect.nam
 <p>Any unmatched paths will redirect to this documentation page, so it's recommended that you add a wildcard catch-all path when redirecting specific paths.</p>
 
 <h2>
+<a name="processing-order" class="anchor" href="processing-order"><span class="octicon octicon-link"></span></a>TXT record processing order</h2>
+<p>The DNS <code>TXT</code> records are processed in two stages; specific matches first and then catch-alls. This allows for complex matching against specific <code>path</code> values followed by a catch-all based fall through for
+any non-matched requests. This ensures that more specific rules will match a request before a catch-all.
+
+<p>Since DNS lookups are not returned in any predetermined order there is an inherent round-robin effect when multiple <code>TXT</code> records are created which would match a given request. This is true for both specific
+<code>path</code> matches and catch-alls.</p>
+
+<h2>
 <a name="examples" class="anchor" href="#examples"><span class="octicon octicon-link"></span></a>Examples</h2>
 
 <p><code>Redirects to https://github.com/holic</code> redirects all paths on the hostname to <code>https://github.com/holic</code> with a <code>302</code> status code.</p>
@@ -91,6 +99,13 @@ _redirect.github  IN  TXT    "Redirects to https://github.com/holic/redirect.nam
 <p><code>Redirects from /github to https://github.com/holic</code> redirects only the <code>/github</code> path on the hostname to the target URL.</p>
 
 <p><code>Redirects from /* to https://github.com/holic/*</code> is a wildcard match that will redirect to the target URL, replacing the wildcards with the matched value.</p>
+
+<p>The following combines all of the above using wildcards, regular matches, and a catch-all.<br>
+<code>Redirects from /match1/* to https://github.com/holic/*</code><br>
+<code>Redirects to https://github.com/holic</code><br>
+<code>Redirects from /match2/ to https://github.com/holic/match2</code><br>
+The important thing to note is that with multiple redirects they are processed according to the <a href="#processing-order">TXT record processing order</a> described above. So, even though the cath-all is in the middle of the other two rules it will only ever match last.
+</p>
         </section>
 
         <aside id="sidebar">
@@ -142,6 +157,6 @@ _redirect.github  IN  TXT    "Redirects to https://github.com/holic/redirect.nam
       }
     })()
   </script>
-  
+
   </body>
 </html>
