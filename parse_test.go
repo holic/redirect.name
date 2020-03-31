@@ -21,6 +21,16 @@ func TestParse(t *testing.T) {
 	assertEqual(t, config.To, "http://github.com/holic")
 	assertEqual(t, config.RedirectState, "")
 
+	config = Parse("Redirect to ftp://github.com")
+	assertEqual(t, config.From, "")
+	assertEqual(t, config.To, "ftp://github.com")
+	assertEqual(t, config.RedirectState, "")
+
+	config = Parse("Redirect to mailto:test@example.com")
+	assertEqual(t, config.From, "")
+	assertEqual(t, config.To, "mailto:test@example.com")
+	assertEqual(t, config.RedirectState, "")
+
 	config = Parse("Redirect from / to http://github.com/holic")
 	assertEqual(t, config.From, "/")
 	assertEqual(t, config.To, "http://github.com/holic")

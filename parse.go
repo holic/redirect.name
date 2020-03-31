@@ -10,7 +10,7 @@ type Config struct {
 
 var configRE = regexp.MustCompile(`Redirects?(\s+.*)`)
 var fromRE = regexp.MustCompile(`\s+from\s+(/\S*)`)
-var toRE = regexp.MustCompile(`\s+to\s+(https?\://\S+|/\S*)`)
+var toRE = regexp.MustCompile(`\s+to\s+(\S+\:\S+|/\S*)`)
 var stateRE = regexp.MustCompile(`\s+(permanently|temporarily)|\s+with\s+(301|302|307|308)`)
 
 func Parse(record string) *Config {
