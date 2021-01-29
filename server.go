@@ -13,7 +13,10 @@ import (
 )
 
 func fallback(w http.ResponseWriter, r *http.Request, reason string) {
-	location := "http://redirect.name/"
+	location := os.Getenv("FALLBACK_URL")
+	if location == "" {
+		location = "http://redirect.name/"
+	}
 	if reason != "" {
 		location = fmt.Sprintf("%s#reason=%s", location, url.QueryEscape(reason))
 	}
